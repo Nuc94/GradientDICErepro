@@ -4,6 +4,8 @@ import json #line added by nuc to retrieve what was already done
 import os #line added in order to effectively list directories available
 import time #to generate seeds
 
+import metadata_handle
+
 def batch_atari():
     cf = Config()
     cf.add_argument('--i', type=int, default=0)
@@ -303,53 +305,6 @@ def off_policy_evaluation(**kwargs):
         OffPolicyEvaluation(config).collect_data()
     else:
         run_steps(OffPolicyEvaluation(config))
-
-def metadataFromLogDirName(log_dir):
-    '''
-    this dumb method shall allow me to extract metadata from a logging
-    directory, so as to check whether or not stuff stays there
-
-    example of input string:
-    logger-BoyansChainLinear-v0-activation_linear-algo_GradientDICE-discount_0.9-log_level_0-lr_0.25-ridge_0-run-0-220425-121302
-    '''
-    metadata = dict()
-    if 'BoyansChainTabular-v0' in log_dir:
-        metadata['game'] = 'BoyansChainTabular-v0'
-    elif 'BoyansChainLinear-v0' in log_dir:
-        metadata['game'] = 'BoyansChainLinear-v0'
-    else:
-        metadata['game'] = 'unkown'
-    if metadata['game'] != 'unkown':
-        #then i shall get the algo
-        algo_split = log_dir.split('algo_')[-1]
-        dice_split = algo_split.split('DICE')[0]
-        metadata['algo'] = dice_split + 'DICE'
-        #then the discount factor
-        discount_split = log_dir.split('discount_')[-1]
-        discount = float(discount_split.split('-')[0])
-        #then the learning rate
-        lr_split = log_dir.split('-lr_')[-1]
-        lr = float(lr_split.split('-')[0])
-        #and ridge
-        ridge_split = log_dir.split('-ridge_')[-1]
-        ridge = float(ridge_split.split('-')[0])
-        metadata['discount'] = discount
-        metadata['lr'] = lr
-        metadata['ridge'] = ridge
-    return metadata
-
-def metadataFromVars(game, algo, discount, lr, ridge):
-    metadata = {
-        'game' : game,
-        'algo' : algo,
-        'discount' : discount,
-        'lr' : lr,
-        'ridge' : ridge
-    }
-    return metadata
-
-def metadataToString(metadata):
-    return json.dumps(metadata).replace('\\', '')
 
 def getSeed():
     now = int(time.time() * 1000)
