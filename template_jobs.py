@@ -326,6 +326,41 @@ if __name__ == '__main__':
     # select_device(0)
     # batch_atari()
 
+    with open('to_do.json', 'r') as infile:
+        to_do = json.load(infile)
+
+    for task in to_do:
+        if task['runs_required'] > task['runs_done']:
+            metadata = task['metadata']
+            game = metadata['game']
+            algo = metadata['algo']
+            lr = metadata['lr']
+            discount = metadata['discount']
+            ridge = metadata['ridge']
+
+            gradient_dice_boyans_chain(
+                # game='BoyansChainTabular-v0',
+                game=game,
+                algo=algo,
+                # algo='GenDICE',
+                #algo='DualDICE',
+                # ridge=0,
+                ridge=ridge,
+                discount=discount,
+                # activation='squared',
+                activation='linear',
+                lr=lr,
+                log_level=0,
+            )
+
+            task['runs_done'] += 1
+            break
+    else:
+        print('everything done')
+
+    with open('to_do.json', 'w') as outfile:
+        json.dump(to_do, outfile)
+
     game = 'Reacher-v2'
     game = 'BoyansChainTabular-v0'
     algo = 'GradientDICE'
@@ -357,7 +392,7 @@ if __name__ == '__main__':
 
     #now nuc will code stuff to re-execute multiple experiments
     #i shall first get insights on what i still need to do
-    log_dirs = list( os.listdir('tf_log') )
+    '''log_dirs = list( os.listdir('tf_log') )
     metadata_count = dict()
     for log_dir in log_dirs:
         log_metadata = metadataFromLogDirName(log_dir)
@@ -369,7 +404,7 @@ if __name__ == '__main__':
     n_runs = 10
     lrs = [4 ** -1, 4 ** -2, 4 ** -3,4 ** -4, 4 ** -5, 4 ** -6]
     ridges = [0, 0.1, 0.001, 0.0001]
-    discounts = [0.1, 0.3, 0.5, 0.7, 0.9]
+    discounts = [0.1, 0.3, 0.5, 0.7, 0.9]'''
 
     #ok some work has been done, and now i need to set everything
     #for the charts
@@ -504,7 +539,7 @@ if __name__ == '__main__':
         }
     ]'''
 
-    games_to_do = [
+    '''games_to_do = [
         {
             'game' : 'BoyansChainLinear-v0',
             'algo' : 'GradientDICE',
@@ -730,6 +765,6 @@ if __name__ == '__main__':
                         activation='linear',
                         lr=lr,
                         log_level=0,
-                    )
+                    )'''
 
     
