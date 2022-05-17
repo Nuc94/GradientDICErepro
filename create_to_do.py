@@ -38,5 +38,5 @@ for algo in algos:
                     entry['metadata'] = metadata
                     to_do.append(entry)
 
-with open('to_do.json', 'w') as outfile:
+with open('to_do_new.json', 'w') as outfile:
     json.dump(to_do, outfile)

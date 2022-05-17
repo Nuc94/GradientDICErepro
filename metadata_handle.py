@@ -34,18 +34,18 @@ def metadataFromLogDirName(log_dir):
         #and ridge
         ridge_split = log_dir.split('-ridge_')[-1]
         ridge = float(ridge_split.split('-')[0])
-        metadata['discount'] = discount
-        metadata['lr'] = lr
-        metadata['ridge'] = ridge
+        metadata['discount'] = float(discount)
+        metadata['lr'] = float(lr)
+        metadata['ridge'] = float(ridge)
     return metadata
 
 def metadataFromVars(game, algo, discount, lr, ridge):
     metadata = {
         'game' : game,
         'algo' : algo,
-        'discount' : discount,
-        'lr' : lr,
-        'ridge' : ridge
+        'discount' : float(discount),
+        'lr' : float(lr),
+        'ridge' : float(ridge)
     }
     return metadata
 

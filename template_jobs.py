@@ -329,7 +329,11 @@ if __name__ == '__main__':
     with open('to_do.json', 'r') as infile:
         to_do = json.load(infile)
 
-    for task in to_do:
+    t_done = False
+
+    while not t_done:
+        t_number = np.random.randint(low = 0, high = len(to_do)) % len(to_do)
+        task = to_do[t_number]
         if task['runs_required'] > task['runs_done']:
             metadata = task['metadata']
             game = metadata['game']
@@ -354,9 +358,10 @@ if __name__ == '__main__':
             )
 
             task['runs_done'] += 1
+            t_done = True
             break
-    else:
-        print('everything done')
+    #else:
+    #    print('everything done')
 
     with open('to_do.json', 'w') as outfile:
         json.dump(to_do, outfile)
