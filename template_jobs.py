@@ -357,11 +357,15 @@ if __name__ == '__main__':
                 log_level=0,
             )
 
-            task['runs_done'] += 1
             t_done = True
             break
     #else:
     #    print('everything done')
+
+    with open('to_do.json', 'r') as infile:
+        to_do = json.load(infile)
+
+    to_do[t_number]['runs_done'] += 1
 
     with open('to_do.json', 'w') as outfile:
         json.dump(to_do, outfile)
