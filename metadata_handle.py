@@ -4,6 +4,14 @@ this shall be a little modult to extract and handle stuff from folder names to g
 
 import json
 
+de_games = [
+    'BoyansChainTabular-v0',
+    'BoyansChainLinear-v0'
+]
+ope_games = [
+    'Reacher-v2'
+]
+
 def metadataFromLogDirName(log_dir):
     '''
     this dumb method shall allow me to extract metadata from a logging
@@ -17,10 +25,12 @@ def metadataFromLogDirName(log_dir):
         metadata['game'] = 'BoyansChainTabular-v0'
     elif 'BoyansChainLinear-v0' in log_dir:
         metadata['game'] = 'BoyansChainLinear-v0'
+    elif 'Reacher-v2' in log_dir:
+        metadata['game'] = 'Reacher-v2'
     else:
         metadata['game'] = 'unkown'
     
-    if metadata['game'] != 'unkown':
+    if metadata['game'] in de_games:
         #then i shall get the algo
         algo_split = log_dir.split('algo_')[-1]
         dice_split = algo_split.split('DICE')[0]
@@ -37,6 +47,25 @@ def metadataFromLogDirName(log_dir):
         metadata['discount'] = float(discount)
         metadata['lr'] = float(lr)
         metadata['ridge'] = float(ridge)
+    #the code for this is almost similar, but some parsing elements change 
+    elif metadata['game'] in ope_games:
+        #then i shall get the algo
+        algo_split = log_dir.split('correction_')[-1]
+        dice_split = algo_split.split('DICE')[0]
+        metadata['algo'] = dice_split + 'DICE'
+        #then the discount factor
+        discount_split = log_dir.split('discount_')[-1]
+        discount = float(discount_split.split('-')[0])
+        #then the learning rate
+        lr_split = log_dir.split('-lr_')[-1]
+        lr = float(lr_split.split('-')[0])
+        #and ridge
+        ridge_split = log_dir.split('-lam_')[-1]
+        ridge = float(ridge_split.split('-')[0])
+        metadata['discount'] = float(discount)
+        metadata['lr'] = float(lr)
+        metadata['ridge'] = float(ridge)
+
     return metadata
 
 def metadataFromVars(game, algo, discount, lr, ridge):

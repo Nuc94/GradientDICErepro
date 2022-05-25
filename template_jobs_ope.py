@@ -326,7 +326,7 @@ if __name__ == '__main__':
     # select_device(0)
     # batch_atari()
 
-    '''with open('to_do.json', 'r') as infile:
+    with open('to_do_ope.json', 'r') as infile:
         to_do = json.load(infile)
 
     t_done = False
@@ -342,7 +342,7 @@ if __name__ == '__main__':
             discount = metadata['discount']
             ridge = metadata['ridge']
 
-            gradient_dice_boyans_chain(
+            '''gradient_dice_boyans_chain(
                 # game='BoyansChainTabular-v0',
                 game=game,
                 algo=algo,
@@ -355,6 +355,22 @@ if __name__ == '__main__':
                 activation='linear',
                 lr=lr,
                 log_level=0,
+            )'''
+
+            activation = 'linear' if game != 'GenDICE' else 'squared'
+
+            off_policy_evaluation(
+                collect_data=False,
+                game=game,
+                correction=algo,
+                activation=activation,
+                # correction='GenDICE',
+                # correction='DualDICE',
+                discount=discount,
+                #discount=1,
+                lr=lr,
+                lam=ridge,
+                target_network_update_freq=1,
             )
 
             t_done = True
@@ -362,17 +378,17 @@ if __name__ == '__main__':
     #else:
     #    print('everything done')
 
-    with open('to_do.json', 'r') as infile:
+    with open('to_do_ope.json', 'r') as infile:
         to_do = json.load(infile)
 
     to_do[t_number]['runs_done'] += 1
 
-    with open('to_do.json', 'w') as outfile:
+    with open('to_do_ope.json', 'w') as outfile:
         json.dump(to_do, outfile)
 
-    game = 'Reacher-v2'
+    '''game = 'Reacher-v2'
     game = 'BoyansChainTabular-v0'
-    algo = 'GradientDICE' '''
+    algo = 'GradientDICE'
     # td3_continuous(
     #     game=game,
     #     max_steps=int(1e4),
@@ -390,7 +406,7 @@ if __name__ == '__main__':
         lr=1e-2,
         lam=1,
         target_network_update_freq=1,
-    )
+    )'''
 
     # td3_correction(
     #     game=game,

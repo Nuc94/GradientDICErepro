@@ -19,16 +19,16 @@ de_games = [
 ]
 lrs = [0.01, 0.005, 0.001]
 ridges = [0.1, 1]
-ridges_zero = [0.1]
+ridges_dual = [0.1]
 discounts = [0.1, 0.3, 0.5, 0.7, 0.9, 1.0]
 
 for algo in algos:
     for game in de_games:
         for lr in lrs:
             for discount in discounts:
-                ridges_list = ridges_zero
-                if game == 'DualDICE':
-                    ridges_list = ridges
+                ridges_list = ridges
+                if algo == 'DualDICE':
+                    ridges_list = ridges_dual
                 for ridge in ridges_list:
                     metadata = metadata_handle.metadataFromVars(game=game, algo=algo, discount=discount, lr=lr, ridge=ridge)
                     entry = dict()
@@ -36,6 +36,8 @@ for algo in algos:
                     entry['runs_done'] = 0
                     entry['metadata'] = metadata
                     to_do.append(entry)
+
+print(len(to_do))
 
 with open('to_do_ope_new.json', 'w') as outfile:
     json.dump(to_do, outfile)
