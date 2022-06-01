@@ -1,9 +1,9 @@
 while :
 do
     python3 template_jobs_ope.py &
-    sleep 15
+    sleep 20
     python3 template_jobs_ope.py &
-    sleep 15
+    sleep 20
     python3 template_jobs_ope.py &
-    sleep 40
+    sleep 140
 done

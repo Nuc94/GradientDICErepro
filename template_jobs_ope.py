@@ -329,11 +329,15 @@ if __name__ == '__main__':
     with open('to_do_ope.json', 'r') as infile:
         to_do = json.load(infile)
 
-    t_done = False
+    max_random_tentatives = 10  #number after which i shall need to attempt before
+                                #deterministically picking up everything
 
-    while not t_done:
+    t_done = False
+    tent_done = 0
+    while not t_done and tent_done < max_random_tentatives:
         t_number = np.random.randint(low = 0, high = len(to_do)) % len(to_do)
         task = to_do[t_number]
+        tent_done += 1
         if task['runs_required'] > task['runs_done']:
             metadata = task['metadata']
             game = metadata['game']
@@ -357,7 +361,7 @@ if __name__ == '__main__':
                 log_level=0,
             )'''
 
-            activation = 'linear' if game != 'GenDICE' else 'squared'
+            activation = 'linear' if algo != 'GenDICE' else 'squared'
 
             off_policy_evaluation(
                 collect_data=False,
@@ -378,13 +382,61 @@ if __name__ == '__main__':
     #else:
     #    print('everything done')
 
-    with open('to_do_ope.json', 'r') as infile:
-        to_do = json.load(infile)
+    if not t_done:
+        for t_number in range(len(to_do)):
+            task = to_do[t_number]
+            if task['runs_required'] > task['runs_done']:
+                metadata = task['metadata']
+                game = metadata['game']
+                algo = metadata['algo']
+                lr = metadata['lr']
+                discount = metadata['discount']
+                ridge = metadata['ridge']
 
-    to_do[t_number]['runs_done'] += 1
+                '''gradient_dice_boyans_chain(
+                    # game='BoyansChainTabular-v0',
+                    game=game,
+                    algo=algo,
+                    # algo='GenDICE',
+                    #algo='DualDICE',
+                    # ridge=0,
+                    ridge=ridge,
+                    discount=discount,
+                    # activation='squared',
+                    activation='linear',
+                    lr=lr,
+                    log_level=0,
+                )'''
 
-    with open('to_do_ope.json', 'w') as outfile:
-        json.dump(to_do, outfile)
+                activation = 'linear' if algo != 'GenDICE' else 'squared'
+
+                off_policy_evaluation(
+                    collect_data=False,
+                    game=game,
+                    correction=algo,
+                    activation=activation,
+                    # correction='GenDICE',
+                    # correction='DualDICE',
+                    discount=discount,
+                    #discount=1,
+                    lr=lr,
+                    lam=ridge,
+                    target_network_update_freq=1,
+                )
+
+                t_done = True
+                break
+
+    if not t_done:
+        print('everything done')
+    else:
+        with open('to_do_ope.json', 'r') as infile:
+            to_do = json.load(infile)
+
+        to_do[t_number]['runs_done'] += 1
+
+        with open('to_do_ope.json', 'w') as outfile:
+            json.dump(to_do, outfile)
 
     '''game = 'Reacher-v2'
     game = 'BoyansChainTabular-v0'
