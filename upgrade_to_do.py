@@ -4,8 +4,8 @@ ok, if i were to need to increase the level of
 
 import json
 
-filename = 'to_do.json'
-runs_to_do = 20
+filename = 'to_do_ope.json'
+runs_to_do = 30
 
 with open(filename, 'r') as infile:
     to_do = json.load(infile)
